@@ -33,31 +33,37 @@ sheet.title = "inStockInventory"
 
 #create column headers
 sheet['A1'] = "Product Picture"
-sheet['A2'] = "Product Name"
-sheet['A3'] = "Colors"
-sheet['A4'] = "Qty"
-sheet['A5'] = "Price"
+sheet['E1'] = "Product Name"
+sheet['F1'] = "Colors"
+sheet['G1'] = "Qty"
+sheet['H1'] = "Price"
 
-row = 2
+
+
+curr_row = 2
 
 for file in image_files:
     product_name = file.split(".")[0]
 
+    start_row = curr_row
+    print(f"Adding product: {product_name} at row {start_row}")
     # Create the image
     image_path = os.path.join(photo_folder, file)
     image = Image(image_path)
 
     # Resize the image
-    image.width = 150
-    image.height = 150
+    new_width = 325
+    new_height = int(image.height * (new_width / image.width))
+    image.width = new_width
+    image.height = new_height
 
     # Put the image into column A
-    worksheet.add_image(image, f"A{row}")
+    sheet.add_image(image, f"A{start_row}")
 
-    # Put the product name into column B
-    sheet.cell(row=row, column=2, value=product_name)
+    # Put the product name into column E
+    sheet.cell(row=start_row, column=5, value=product_name)
 
-row += 1
+    curr_row += 17
 
 #save excel
 workbook.save("inStockInventory.xlsx")
