@@ -1,5 +1,4 @@
-#pip install playwright
-#playwright install
+import re
 from playwright.sync_api import sync_playwright
 
 with sync_playwright() as p:
@@ -26,7 +25,22 @@ with sync_playwright() as p:
     print("Number of cells in the row:", cells.count())
     details = cells.nth(13).inner_text()
 
-    print("\nInventory details for SKU", sku, ":\n", details)
+    print("\nRaw inventory details for SKU", sku, ":\n", details)
+
+    #created list of inventory by color
+    lines = details.strip().splitlines()
+    pattern = rf"{sku}\s+(.*?)\s+\((\d+)\)"
+    
+    print("\nSeparated details:")
+    for line in lines:
+        match = re.search(pattern, line)
+
+    if match:
+        color = match.group(1).strip()
+        quantity = int(match.group(2))
+
+        print("Color:", color)
+        print("Quantity:", quantity)
 
     #Task done
     input("Press Enter to close the browser and exit the script. ..")
