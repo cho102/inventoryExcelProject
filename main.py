@@ -130,7 +130,7 @@ with sync_playwright() as p:
         image.height = new_height
 
         # Calculate the number of rows the image will occupy
-        row_height = 35  # Adjust this value based on your row height
+        row_height = 15  # Adjust this value based on your row height
         photo_rows = int((image.height * 0.75) / row_height) + 1  # 0.75 is a scaling factor for Excel row height
 
         # Put the image into column A/J
