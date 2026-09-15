@@ -10,6 +10,10 @@ from website_inventory import get_inventory
 photo_folder = "photos"
 files = os.listdir(photo_folder)
 
+#create output_folder
+output_folder = "output"
+os.makedirs(output_folder, exist_ok=True)
+
 #check for images only
 image_files = [file for file in files 
                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
@@ -164,7 +168,7 @@ with sync_playwright() as p:
     #save excel
     date = datetime.now().strftime("%Y%m%d")
     name = "inStockInventory"
-    workbook.save(f"{name}_{date}.xlsx")
+    workbook.save(os.path.join(output_folder, f"{name}_{date}.xlsx")
     browser.close()
 
 #check
