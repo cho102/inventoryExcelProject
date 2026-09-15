@@ -73,8 +73,8 @@ with sync_playwright() as p:
         # print(f"Adding product: {sku} at row {curr_row}")
 
 
-        #GET INVENTORY
-        inventory = get_inventory(page, sku)
+        #GET COST & INVENTORY
+        cost, inventory = get_inventory(page, sku)
         # print(f"\nFinal inventory list for SKU {sku}:", inventory)
 
         inventory_row = curr_row
@@ -83,6 +83,7 @@ with sync_playwright() as p:
             sheet.cell(row=inventory_row, column=5, value=sku)
             sheet.cell(row=inventory_row, column=6, value=color)
             sheet.cell(row=inventory_row, column=7, value=quantity)
+            sheet.cell(row=inventory_row, column=8, value=cost)
             inventory_row += 1
 
         
