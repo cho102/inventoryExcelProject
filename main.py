@@ -123,15 +123,6 @@ with sync_playwright() as p:
                 sheet.cell(row=inventory_row, column=price_col, value=cost)
                 inventory_row += 1
             successful += 1
-          
-          # Continue to the next product
-          if left:
-              left_rows_used = 1
-              left = False
-          else:
-              curr_row += max(left_rows_used, 1) + 2
-              left = True
-          continue
 
         # Create the image
         image_path = os.path.join(photo_folder, file)
