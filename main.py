@@ -146,7 +146,7 @@ with sync_playwright() as p:
         else:
             # Move down based on whichever product was taller
             # curr_row = rows_used + curr_row + 2
-            curr_row += max(left_rows_used, rows_used) + curr_row + 2
+            curr_row += max(left_rows_used, rows_used) + 2
             left = True
 
         print("rows used:", rows_used)
