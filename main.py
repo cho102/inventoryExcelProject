@@ -41,18 +41,33 @@ sheet['E1'] = "Product Name"
 sheet['F1'] = "Colors"
 sheet['G1'] = "Qty"
 sheet['H1'] = "Price"
+sheet['J1'] = "Product Picture"
+sheet['N1'] = "Product Name"
+sheet['O1'] = "Colors"
+sheet['P1'] = "Qty"
+sheet['Q1'] = "Price"
 
 #create column widths:
 sheet.column_dimensions["A"].width = 12
 sheet.column_dimensions["B"].width = 12
 sheet.column_dimensions["C"].width = 12
 sheet.column_dimensions["D"].width = 12
+sheet.column_dimensions["J"].width = 12
+sheet.column_dimensions["K"].width = 12
+sheet.column_dimensions["L"].width = 12
+sheet.column_dimensions["M"].width = 12
 
 sheet.column_dimensions["E"].width = 15
 sheet.column_dimensions["F"].width = 10
 sheet.column_dimensions["G"].width = 10
 sheet.column_dimensions["H"].width = 10
+sheet.column_dimensions["N"].width = 15
+sheet.column_dimensions["O"].width = 10
+sheet.column_dimensions["P"].width = 10
+sheet.column_dimensions["Q"].width = 10
 
+left_start_col = 1    # A
+right_start_col = 10  # J
 
 #START BROWSER
 with sync_playwright() as p:
@@ -68,7 +83,23 @@ with sync_playwright() as p:
     files = os.listdir(photo_folder)
     curr_row = 2
 
+    left = True
+
     for file in image_files:
+        #format data
+        if left:
+          picture_col = 1
+          product_col = 5
+          color_col = 6
+          qty_col = 7
+          price_col = 8
+        else:
+          picture_col = 10
+          product_col = 14
+          color_col = 15
+          qty_col = 16
+          price_col = 17
+      
         sku = file.split(".")[0]
         # print(f"Adding product: {sku} at row {curr_row}")
 
@@ -80,10 +111,10 @@ with sync_playwright() as p:
         inventory_row = curr_row
         #add inventory details to excel
         for color, quantity in inventory:
-            sheet.cell(row=inventory_row, column=5, value=sku)
-            sheet.cell(row=inventory_row, column=6, value=color)
-            sheet.cell(row=inventory_row, column=7, value=quantity)
-            sheet.cell(row=inventory_row, column=8, value=cost)
+            sheet.cell(row=inventory_row, column=product_col, value=sku)
+            sheet.cell(row=inventory_row, column=color_col, value=color)
+            sheet.cell(row=inventory_row, column=qty_col, value=quantity)
+            sheet.cell(row=inventory_row, column=price_col, value=cost)
             inventory_row += 1
 
         
@@ -102,14 +133,28 @@ with sync_playwright() as p:
         row_height = 35  # Adjust this value based on your row height
         photo_rows = int((image.height * 0.75) / row_height) + 1  # 0.75 is a scaling factor for Excel row height
         # Put the image into column A
-        sheet.add_image(image, f"A{curr_row}")
+        sheet.add_image(image, f"{chr(64 + picture_col)}{curr_row}")
 
     
         rows_used = max(len(inventory) + 1, photo_rows)
-        curr_row = rows_used + curr_row + 2
+        # curr_row = rows_used + curr_row + 2
+        if left:
+            # Remember how many rows the left product used
+            left_rows_used = rows_used
+            left = False
+        else:
+            # Move down based on whichever product was taller
+            curr_row += max(left_rows_used, rows_used) + 2
+            left = True
 
         print("rows used:", rows_used)
         print("current row:", curr_row)
+      #switch between left and right
+        if left:
+          left = False
+        else:
+          left = True
+          curr_row += 2
         
 
     #save excel
