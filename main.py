@@ -7,24 +7,23 @@ from website_inventory import get_inventory
 
 #access photos folder
 photo_folder = "photos"
-
-#images 
 files = os.listdir(photo_folder)
+
 #check for images only
 image_files = [file for file in files 
                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
 
 #find product names from image files
-product_names = [file.split(".")[0] for file in image_files]
+#product_names = [file.split(".")[0] for file in image_files]
 
 #check
-print("Image files in the folder:")
-for file in image_files:
-    print(file)
-    # print("Product name:", file.split(".")[0])
-print("Image files in the folder:")
-for product in product_names:
-    print(product)
+# print("Image files in the folder:")
+# for file in image_files:
+#     print(file)
+#     # print("Product name:", file.split(".")[0])
+# print("Image files in the folder:")
+# for product in product_names:
+#     print(product)
 
 #create a new Excel workbook
 workbook = Workbook()
@@ -42,9 +41,19 @@ sheet['F1'] = "Colors"
 sheet['G1'] = "Qty"
 sheet['H1'] = "Price"
 
+#create column widths:
+worksheet.column_dimensions["A"].width = 15
+worksheet.column_dimensions["B"].width = 15
+worksheet.column_dimensions["C"].width = 15
+worksheet.column_dimensions["D"].width = 15
+
+worksheet.column_dimensions["E"].width = 15
+worksheet.column_dimensions["F"].width = 10
+worksheet.column_dimensions["G"].width = 10
+worksheet.column_dimensions["H"].width = 10
 
 
-#start browser
+#START BROWSER
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
     context = browser.new_context(storage_state="login_state.json")
@@ -65,7 +74,7 @@ with sync_playwright() as p:
         print(f"Adding product: {sku} at row {curr_row}")
 
 
-        #get inventory
+        #GET INVENTORY
         inventory = get_inventory(page, sku)
         print(f"\nFinal inventory list for SKU {sku}:", inventory)
 
@@ -95,6 +104,9 @@ with sync_playwright() as p:
         # Put the product name into column E
         sheet.cell(row=curr_row, column=5, value=sku)
 
+      if inventory_row > 17:
+        curr_row += 2
+      else:
         curr_row += 17
 
     #save excel
