@@ -6,18 +6,20 @@ from datetime import datetime
 
 from website_inventory import get_inventory
 from excel_formatting import setup_sheet
+from photo_processing import get_photo_files
 
 #access photos folder
 photo_folder = "photos"
-files = os.listdir(photo_folder)
+image_files = get_photo_files(photo_folder)
+# files = os.listdir(photo_folder)
 
 #create output_folder
 output_folder = "output"
 os.makedirs(output_folder, exist_ok=True)
 
 #check for images only
-image_files = sorted([file for file in files 
-               if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))])
+# image_files = sorted([file for file in files 
+#                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))])
 
 #create a new Excel workbook
 workbook = Workbook()
