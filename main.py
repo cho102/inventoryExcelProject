@@ -42,15 +42,15 @@ sheet['G1'] = "Qty"
 sheet['H1'] = "Price"
 
 #create column widths:
-worksheet.column_dimensions["A"].width = 15
-worksheet.column_dimensions["B"].width = 15
-worksheet.column_dimensions["C"].width = 15
-worksheet.column_dimensions["D"].width = 15
+sheet.column_dimensions["A"].width = 15
+sheet.column_dimensions["B"].width = 15
+sheet.column_dimensions["C"].width = 15
+sheet.column_dimensions["D"].width = 15
 
-worksheet.column_dimensions["E"].width = 15
-worksheet.column_dimensions["F"].width = 10
-worksheet.column_dimensions["G"].width = 10
-worksheet.column_dimensions["H"].width = 10
+sheet.column_dimensions["E"].width = 15
+sheet.column_dimensions["F"].width = 10
+sheet.column_dimensions["G"].width = 10
+sheet.column_dimensions["H"].width = 10
 
 
 #START BROWSER
@@ -104,10 +104,11 @@ with sync_playwright() as p:
         # Put the product name into column E
         sheet.cell(row=curr_row, column=5, value=sku)
 
-      if inventory_row > 17:
-        curr_row += 2
-      else:
-        curr_row += 17
+        # if inventory_row > curr_row + 17:
+        #     curr_row += 2
+        # else:
+        #     curr_row += 17
+        curr_row +=17
 
     #save excel
     workbook.save("inStockInventory.xlsx")
