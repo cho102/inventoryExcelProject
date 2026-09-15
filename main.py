@@ -2,6 +2,7 @@ import os
 from openpyxl import Workbook
 from openpyxl.drawing.image import Image 
 from playwright.sync_api import sync_playwright
+from datetime import datetime
 
 from website_inventory import get_inventory
 
@@ -42,10 +43,10 @@ sheet['G1'] = "Qty"
 sheet['H1'] = "Price"
 
 #create column widths:
-sheet.column_dimensions["A"].width = 15
-sheet.column_dimensions["B"].width = 15
-sheet.column_dimensions["C"].width = 15
-sheet.column_dimensions["D"].width = 15
+sheet.column_dimensions["A"].width = 12
+sheet.column_dimensions["B"].width = 12
+sheet.column_dimensions["C"].width = 12
+sheet.column_dimensions["D"].width = 12
 
 sheet.column_dimensions["E"].width = 15
 sheet.column_dimensions["F"].width = 10
@@ -71,14 +72,13 @@ with sync_playwright() as p:
         image_files = [file for file in files 
                         if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
         sku = file.split(".")[0]
-        print(f"Adding product: {sku} at row {curr_row}")
+        # print(f"Adding product: {sku} at row {curr_row}")
 
 
         #GET INVENTORY
         inventory = get_inventory(page, sku)
-        print(f"\nFinal inventory list for SKU {sku}:", inventory)
+        # print(f"\nFinal inventory list for SKU {sku}:", inventory)
 
-        start_row = curr_row
         inventory_row = curr_row
         #add inventory details to excel
         for color, quantity in inventory:
@@ -94,24 +94,28 @@ with sync_playwright() as p:
 
         # Resize the image
         new_width = 325
+        # new_height = 250
         new_height = int(image.height * (new_width / image.width))
         image.width = new_width
         image.height = new_height
 
+        # Calculate the number of rows the image will occupy
+        row_height = 35  # Adjust this value based on your row height
+        photo_rows = int((image.height * 0.75) / row_height) + 1  # 0.75 is a scaling factor for Excel row height
         # Put the image into column A
         sheet.add_image(image, f"A{curr_row}")
 
-        # Put the product name into column E
-        sheet.cell(row=curr_row, column=5, value=sku)
+    
+        rows_used = max(len(inventory) + 1, photo_rows)
+        curr_row = rows_used + curr_row + 15
 
-        # if inventory_row > curr_row + 17:
-        #     curr_row += 2
-        # else:
-        #     curr_row += 17
-        curr_row +=17
+        print("rows used:", rows_used)
+        print("current row:", curr_row)
+        
 
     #save excel
-    workbook.save("inStockInventory.xlsx")
+    date = datetime.now().strftime("%Y%m%d")
+    workbook.save(f"inStockInventory_{date}.xlsx")
     browser.close()
 
 #check
