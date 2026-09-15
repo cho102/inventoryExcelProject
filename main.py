@@ -133,9 +133,6 @@ with sync_playwright() as p:
         row_height = 35  # Adjust this value based on your row height
         photo_rows = int((image.height * 0.75) / row_height) + 1  # 0.75 is a scaling factor for Excel row height
 
-        # Set the row heights
-        for row in range(curr_row, curr_row + photo_rows):
-            sheet.row_dimensions[row].height = row_height
         # Put the image into column A/J
         sheet.add_image(image, f"{chr(64 + picture_col)}{curr_row}")
 
@@ -149,7 +146,7 @@ with sync_playwright() as p:
         else:
             # Move down based on whichever product was taller
             # curr_row = rows_used + curr_row + 2
-            curr_row += max(left_rows_used, rows_used) + 2
+            curr_row += max(left_rows_used, rows_used) + curr_row + 2
             left = True
 
         print("rows used:", rows_used)
