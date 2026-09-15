@@ -16,10 +16,19 @@ def get_inventory(page, sku):
     #Find inventory of SKU
     row = page.locator("tr").filter(has_text=sku).first
     cells = row.locator("td")
+    
     #get cost column
-    cost = float(cells.nth(11).inner_text())
+    cost_text = cells.nth(11).inner_text().strip()
+    
+    try:
+        cost = float(cost_text)
+    except ValueError:
+        raise Exception(f"Invalid cost for SKU {sku}: {cost_text}")
+
     # get the Details column (14th column, index 13)
     details = cells.nth(13).inner_text()
+    if not details:
+        return cost, []
     # print("\nRaw inventory details for SKU", sku, ":\n", details)
 
     #created list of inventory by color
