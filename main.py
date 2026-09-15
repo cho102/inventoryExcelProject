@@ -15,8 +15,8 @@ output_folder = "output"
 os.makedirs(output_folder, exist_ok=True)
 
 #check for images only
-image_files = [file for file in files 
-               if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+image_files = sorted([file for file in files 
+               if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))])
 
 #create a new Excel workbook
 workbook = Workbook()
@@ -55,9 +55,6 @@ sheet.column_dimensions["O"].width = 10
 sheet.column_dimensions["P"].width = 10
 sheet.column_dimensions["Q"].width = 10
 
-left_start_col = 1    # A
-right_start_col = 10  # J
-
 #START BROWSER
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
@@ -66,8 +63,6 @@ with sync_playwright() as p:
      
     page.goto("http://192.168.1.12/som/query_sm.aspx")
 
-    #read image files and add to excel
-    files = os.listdir(photo_folder)
     curr_row = 2
 
     left = True
@@ -76,6 +71,10 @@ with sync_playwright() as p:
     successful = 0
     no_inventory = 0
     errors = 0
+
+    #Handle duplciate skus
+    processed_skus = set()
+  
   
     for file in image_files:
         #format data
@@ -93,6 +92,13 @@ with sync_playwright() as p:
           price_col = 17
       
         sku = file.split(".")[0]
+
+        #check for duplicates
+        if sku in processed_skus:
+          print(f"Skipping duplicate SKU: {sku}")
+          continue
+      
+        processed_skus.add(sku)
 
         #GET COST & INVENTORY
         try:
