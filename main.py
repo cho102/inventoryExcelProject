@@ -69,6 +69,10 @@ with sync_playwright() as p:
     left = True
     left_rows_used = 0
 
+    successful = 0
+    no_inventory = 0
+    errors = 0
+  
     for file in image_files:
         #format data
         if left:
@@ -85,20 +89,49 @@ with sync_playwright() as p:
           price_col = 17
       
         sku = file.split(".")[0]
-        # print(f"Adding product: {sku} at row {curr_row}")
 
         #GET COST & INVENTORY
-        cost, inventory = get_inventory(page, sku)
-        # print(f"\nFinal inventory list for SKU {sku}:", inventory)
+        try:
+          cost, inventory = get_inventory(page, sku)
+          error_message = None
+        except Exception as e:
+          #Can't find sku
+          print(f"Error processing {sku}: {e}")
+          cost = ""
+          inventory = []
+          error_message = str(e)
+          errors += 1
 
-        inventory_row = curr_row
-        #add inventory details to excel
-        for color, quantity in inventory:
-            sheet.cell(row=inventory_row, column=product_col, value=sku)
-            sheet.cell(row=inventory_row, column=color_col, value=color)
-            sheet.cell(row=inventory_row, column=qty_col, value=quantity)
-            sheet.cell(row=inventory_row, column=price_col, value=cost)
-            inventory_row += 1
+        if error_message: #No SKU found
+          sheet.cell(row=curr_row, column=product_col, value=sku)
+          sheet.cell(row=curr_row, column=color_col, value="ERROR")
+          sheet.cell(row=curr_row, column=qty_col, value=error_message)
+      
+        elif not inventory: #No inventory found
+            print(f"No inventory found for {sku}")
+            sheet.cell(row=curr_row, column=product_col, value=sku)
+            sheet.cell(row=curr_row, column=color_col, value="No inventory")
+            no_inventory += 1
+        
+        else:
+            inventory_row = curr_row
+            #add inventory details to excel
+            for color, quantity in inventory:
+                sheet.cell(row=inventory_row, column=product_col, value=sku)
+                sheet.cell(row=inventory_row, column=color_col, value=color)
+                sheet.cell(row=inventory_row, column=qty_col, value=quantity)
+                sheet.cell(row=inventory_row, column=price_col, value=cost)
+                inventory_row += 1
+            successful += 1
+          
+          # Continue to the next product
+          if left:
+              left_rows_used = 1
+              left = False
+          else:
+              curr_row += max(left_rows_used, 1) + 2
+              left = True
+          continue
 
         # Create the image
         image_path = os.path.join(photo_folder, file)
@@ -126,13 +159,17 @@ with sync_playwright() as p:
             left = False
         else:
             # Move down based on whichever product was taller
-            # curr_row = rows_used + curr_row + 2
             curr_row += max(left_rows_used, rows_used) + 2
             left = True
 
         print("rows used:", rows_used)
         print("current row:", curr_row)
 
+    print("\n--- Summary ---")
+    print(f"Successful: {successful}")
+    print(f"No inventory: {no_inventory}")
+    print(f"Errors: {errors}")
+    print(f"Total products: {len(image_files)}")
     #save excel
     date = datetime.now().strftime("%Y%m%d")
     name = "inStockInventory"
