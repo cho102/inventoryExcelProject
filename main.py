@@ -69,8 +69,6 @@ with sync_playwright() as p:
     curr_row = 2
 
     for file in image_files:
-        image_files = [file for file in files 
-                        if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
         sku = file.split(".")[0]
         # print(f"Adding product: {sku} at row {curr_row}")
 
@@ -107,7 +105,7 @@ with sync_playwright() as p:
 
     
         rows_used = max(len(inventory) + 1, photo_rows)
-        curr_row = rows_used + curr_row + 15
+        curr_row = rows_used + curr_row + 2
 
         print("rows used:", rows_used)
         print("current row:", curr_row)
