@@ -84,6 +84,7 @@ with sync_playwright() as p:
     curr_row = 2
 
     left = True
+    left_rows_used = 0
 
     for file in image_files:
         #format data
@@ -123,8 +124,7 @@ with sync_playwright() as p:
         image = Image(image_path)
 
         # Resize the image
-        new_width = 325
-        # new_height = 250
+        new_width = 288
         new_height = int(image.height * (new_width / image.width))
         image.width = new_width
         image.height = new_height
@@ -132,7 +132,11 @@ with sync_playwright() as p:
         # Calculate the number of rows the image will occupy
         row_height = 35  # Adjust this value based on your row height
         photo_rows = int((image.height * 0.75) / row_height) + 1  # 0.75 is a scaling factor for Excel row height
-        # Put the image into column A
+
+        # Set the row heights
+        for row in range(curr_row, curr_row + photo_rows):
+            sheet.row_dimensions[row].height = row_height
+        # Put the image into column A/J
         sheet.add_image(image, f"{chr(64 + picture_col)}{curr_row}")
 
     
@@ -144,18 +148,13 @@ with sync_playwright() as p:
             left = False
         else:
             # Move down based on whichever product was taller
-            curr_row = rows_used + curr_row + 2
-            # curr_row += max(left_rows_used, rows_used) + 2
+            # curr_row = rows_used + curr_row + 2
+            curr_row += max(left_rows_used, rows_used) + 2
             left = True
 
         print("rows used:", rows_used)
         print("current row:", curr_row)
-      #switch between left and right
-        # if left:
-        #   left = False
-        # else:
-        #   left = True
-        #   curr_row += 2
+
         
 
     #save excel
