@@ -168,7 +168,7 @@ with sync_playwright() as p:
     #save excel
     date = datetime.now().strftime("%Y%m%d")
     name = "inStockInventory"
-    workbook.save(os.path.join(output_folder, f"{name}_{date}.xlsx")
+    workbook.save(os.path.join(output_folder, f"{name}_{date}.xlsx"))
     browser.close()
 
 #check
