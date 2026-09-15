@@ -16,6 +16,8 @@ def get_inventory(page, sku):
     #Find inventory of SKU
     row = page.locator("tr").filter(has_text=sku).first
     cells = row.locator("td")
+    #get cost column
+    cost = float(cells.nth(11).inner_text())
     # get the Details column (14th column, index 13)
     details = cells.nth(13).inner_text()
     # print("\nRaw inventory details for SKU", sku, ":\n", details)
@@ -37,4 +39,4 @@ def get_inventory(page, sku):
             # print("Quantity:", quantity)
             inventory.append((color, quantity))
 
-    return inventory
+    return cost, inventory
