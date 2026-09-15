@@ -1,6 +1,9 @@
 import os
 from openpyxl import Workbook
-from openpyxl.drawing.image import Image
+from openpyxl.drawing.image import Image 
+from playwright.sync_api import sync_playwright
+
+from website_inventory import get_inventory
 
 #access photos folder
 photo_folder = "photos"
@@ -8,7 +11,8 @@ photo_folder = "photos"
 #images 
 files = os.listdir(photo_folder)
 #check for images only
-image_files = [file for file in files if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+image_files = [file for file in files 
+               if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
 
 #find product names from image files
 product_names = [file.split(".")[0] for file in image_files]
@@ -40,33 +44,62 @@ sheet['H1'] = "Price"
 
 
 
-curr_row = 2
+#start browser
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
+    context = browser.new_context(storage_state="login_state.json")
+    page = context.new_page()
+     
+    page.goto("http://192.168.1.12/som/query_sm.aspx")
 
-for file in image_files:
-    product_name = file.split(".")[0]
 
-    start_row = curr_row
-    print(f"Adding product: {product_name} at row {start_row}")
-    # Create the image
-    image_path = os.path.join(photo_folder, file)
-    image = Image(image_path)
 
-    # Resize the image
-    new_width = 325
-    new_height = int(image.height * (new_width / image.width))
-    image.width = new_width
-    image.height = new_height
+    #read image files and add to excel
+    files = os.listdir(photo_folder)
+    curr_row = 2
 
-    # Put the image into column A
-    sheet.add_image(image, f"A{start_row}")
+    for file in image_files:
+        image_files = [file for file in files 
+                        if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+        sku = file.split(".")[0]
+        print(f"Adding product: {sku} at row {curr_row}")
 
-    # Put the product name into column E
-    sheet.cell(row=start_row, column=5, value=product_name)
 
-    curr_row += 17
+        #get inventory
+        inventory = get_inventory(page, sku)
+        print(f"\nFinal inventory list for SKU {sku}:", inventory)
 
-#save excel
-workbook.save("inStockInventory.xlsx")
+        start_row = curr_row
+        inventory_row = curr_row
+        #add inventory details to excel
+        for color, quantity in inventory:
+            sheet.cell(row=inventory_row, column=5, value=sku)
+            sheet.cell(row=inventory_row, column=6, value=color)
+            sheet.cell(row=inventory_row, column=7, value=quantity)
+            inventory_row += 1
+
+        
+        # Create the image
+        image_path = os.path.join(photo_folder, file)
+        image = Image(image_path)
+
+        # Resize the image
+        new_width = 325
+        new_height = int(image.height * (new_width / image.width))
+        image.width = new_width
+        image.height = new_height
+
+        # Put the image into column A
+        sheet.add_image(image, f"A{curr_row}")
+
+        # Put the product name into column E
+        sheet.cell(row=curr_row, column=5, value=sku)
+
+        curr_row += 17
+
+    #save excel
+    workbook.save("inStockInventory.xlsx")
+    browser.close()
 
 #check
 print("Excel file created successfully!")

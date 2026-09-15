@@ -1,9 +1,7 @@
 import re
 from playwright.sync_api import sync_playwright
 
-def get_inventory(sku):
-        
-
+def get_inventory(page, sku):
     #Login
     # print(page.title())
     # input("Website loaded. Log in using the browser window and press Enter to continue. ..")
@@ -40,20 +38,3 @@ def get_inventory(sku):
             inventory.append((color, quantity))
 
     return inventory
-
-with sync_playwright() as p:
-    browser = p.chromium.launch(headless=False)
-    context = browser.new_context(storage_state="login_state.json")
-    page = context.new_page()
-     
-    page.goto("http://192.168.1.12/som/query_sm.aspx")
-
-    #test the function
-    skus = ["FC20600", "FC19784"]
-    for sku in skus:
-        inventory = get_inventory(sku)
-        print(f"\nFinal inventory list for SKU {sku}:", inventory)
-
-    #Task done
-    # input("Press Enter to close the browser and exit the script. ..")
-    browser.close()
