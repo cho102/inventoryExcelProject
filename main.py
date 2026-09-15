@@ -5,6 +5,7 @@ from playwright.sync_api import sync_playwright
 from datetime import datetime
 
 from website_inventory import get_inventory
+from excel_formatting import setup_sheet
 
 #access photos folder
 photo_folder = "photos"
@@ -23,37 +24,7 @@ workbook = Workbook()
 
 #select the active worksheet
 sheet = workbook.active
-
-#create column headers
-sheet['A1'] = "Product Picture"
-sheet['E1'] = "Product Name"
-sheet['F1'] = "Colors"
-sheet['G1'] = "Qty"
-sheet['H1'] = "Price"
-sheet['J1'] = "Product Picture"
-sheet['N1'] = "Product Name"
-sheet['O1'] = "Colors"
-sheet['P1'] = "Qty"
-sheet['Q1'] = "Price"
-
-#create column widths:
-sheet.column_dimensions["A"].width = 12
-sheet.column_dimensions["B"].width = 12
-sheet.column_dimensions["C"].width = 12
-sheet.column_dimensions["D"].width = 12
-sheet.column_dimensions["J"].width = 12
-sheet.column_dimensions["K"].width = 12
-sheet.column_dimensions["L"].width = 12
-sheet.column_dimensions["M"].width = 12
-
-sheet.column_dimensions["E"].width = 15
-sheet.column_dimensions["F"].width = 10
-sheet.column_dimensions["G"].width = 10
-sheet.column_dimensions["H"].width = 10
-sheet.column_dimensions["N"].width = 15
-sheet.column_dimensions["O"].width = 10
-sheet.column_dimensions["P"].width = 10
-sheet.column_dimensions["Q"].width = 10
+setup_sheet(sheet)
 
 #START BROWSER
 with sync_playwright() as p:
