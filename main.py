@@ -137,24 +137,25 @@ with sync_playwright() as p:
 
     
         rows_used = max(len(inventory) + 1, photo_rows)
-        # curr_row = rows_used + curr_row + 2
+        
         if left:
             # Remember how many rows the left product used
             left_rows_used = rows_used
             left = False
         else:
             # Move down based on whichever product was taller
-            curr_row += max(left_rows_used, rows_used) + 2
+            curr_row = rows_used + curr_row + 2
+            # curr_row += max(left_rows_used, rows_used) + 2
             left = True
 
         print("rows used:", rows_used)
         print("current row:", curr_row)
       #switch between left and right
-        if left:
-          left = False
-        else:
-          left = True
-          curr_row += 2
+        # if left:
+        #   left = False
+        # else:
+        #   left = True
+        #   curr_row += 2
         
 
     #save excel
