@@ -30,12 +30,6 @@ setup_sheet(sheet)
 
 #START BROWSER
 playwright, browser, context, page = start_browser()
-# with sync_playwright() as p:
-#     browser = p.chromium.launch(headless=False)
-#     context = browser.new_context(storage_state="login_state.json")
-#     page = context.new_page()
-     
-#     page.goto("http://192.168.1.12/som/query_sm.aspx")
 
 curr_row = 2
 
@@ -85,35 +79,12 @@ for file in image_files:
         successful += 1
 
     # Create the image
-    # image_path = os.path.join(photo_folder, file)
-    # image = Image(image_path)
-
-    # # Resize the image
-    # new_width = 288
-    # new_height = int(image.height * (new_width / image.width))
-    # image.width = new_width
-    # image.height = new_height
-
-    # # Calculate the number of rows the image will occupy
-    # row_height = 15  # Adjust this value based on your row height
-    # photo_rows = int((image.height * 0.75) / row_height) + 1  # 0.75 is a scaling factor for Excel row height
-
-    # # Put the image into column A/J
-    # sheet.add_image(image, f"{chr(64 + picture_col)}{curr_row}")
     picture_col = "A" if left else "J"
     photo_rows = add_photo(sheet, curr_row, picture_col, photo_folder, file)
 
 
     rows_used = max(len(inventory) + 1, photo_rows)
     
-    # if left:
-    #     # Remember how many rows the left product used
-    #     left_rows_used = rows_used
-    #     left = False
-    # else:
-    #     # Move down based on whichever product was taller
-    #     curr_row += max(left_rows_used, rows_used) + 2
-    #     left = True
     curr_row, left_rows_used, left = update_position(curr_row, left_rows_used, rows_used, left)
 
     print("rows used:", rows_used)
