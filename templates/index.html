@@ -10,7 +10,15 @@
 
     <p>Generate an Excel inventory report.</p>
 
-    <button>Generate Inventory</button>
+    <form action="/generate" method = "POST">
+        <label for="product_list">Product numbers:</label>
+        <br>
+        <textarea id="product_list" name="product_list" rows="15" cols="50" placeholder="Enter product numbers separated by comma or returns...">
+
+        </textarea>
+        <br><br>
+        <button type="submit">Generate inventory</button>
+    </form>
 
 </body>
 </html>

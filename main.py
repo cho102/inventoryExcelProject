@@ -1,7 +1,5 @@
 import os
 from openpyxl import Workbook
-# from openpyxl.drawing.image import Image 
-# from playwright.sync_api import sync_playwright
 from datetime import datetime
 
 from website_inventory import get_inventory, start_browser
