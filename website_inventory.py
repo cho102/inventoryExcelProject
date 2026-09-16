@@ -36,12 +36,13 @@ def get_inventory(page, sku):
     details = cells.nth(13).inner_text()
     if not details:
         return cost, []
-
+    print("DETAILS:")
+    print(details)
     #created list of inventory by color
     inventory = []
 
     lines = details.strip().splitlines()
-    pattern = rf"{sku}(?:\s+SET)?\s+(.*?)\s+\((\d+)\)"
+    pattern = rf"{re.escape(sku)}(?:\s+SET)?\s+(.*?)\s+\((\d+)\)"
         
     for line in lines:
         match = re.search(pattern, line)
