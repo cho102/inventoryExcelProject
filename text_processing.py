@@ -43,7 +43,7 @@ def get_all_product_skus(product_list, photo_folder):
     #add skus from product list
     for sku in get_product_skus(product_list):
         if sku.upper() not in [s.upper() for s in product_skus]:
-            product_skus.append(sku)
+            product_skus.append(sku.upper())
 
 
     #add skus from photo folder
@@ -51,5 +51,5 @@ def get_all_product_skus(product_list, photo_folder):
     for photo_file in photo_files:
         photo_sku = photo_file.split('.')[0]  # Assuming the SKU is the filename without extension
         if photo_sku.upper() not in [s.upper() for s in product_skus] and photo_sku.split(' ')[0].upper() not in [s.upper() for s in product_skus]:
-            product_skus.append(photo_sku)
+            product_skus.append(photo_sku.upper())
     return product_skus

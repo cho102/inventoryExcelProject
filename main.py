@@ -10,12 +10,17 @@ from excel_formatting import (setup_sheet, add_inventory,
                               update_position, 
                               LEFT, RIGHT)
 from photo_processing import add_photo, get_photo_files, get_photo_sku
-# from text_processing import get_product_skus
+from text_processing import get_all_product_skus, find_product_photo
 
 #access photos folder
 photo_folder = "photos"
 image_files = get_photo_files(photo_folder)
-# files = os.listdir(photo_folder)
+with open("product_list.txt", 'r') as f:
+    product_list = f.read()
+
+#access product list
+product_list_file = "product_list.txt"
+product_skus = get_all_product_skus(product_list, photo_folder)
 
 #create output_folder
 output_folder = "output"
@@ -44,10 +49,8 @@ errors = 0
 processed_skus = set()
 
 
-for file in image_files:
+for sku in product_skus:
     columns = LEFT if left else RIGHT
-    
-    sku = get_photo_sku(file)
 
     #check for duplicates
     if sku in processed_skus:
@@ -79,8 +82,22 @@ for file in image_files:
         successful += 1
 
     # Create the image
+    photo_file = None
+
+    for file in image_files:
+        if get_photo_sku(file).upper() == sku.upper():
+            photo_file = file
+            break
+
+    #create image if it exists
     picture_col = "A" if left else "J"
-    photo_rows = add_photo(sheet, curr_row, picture_col, photo_folder, file)
+    if photo_file:
+        print(f"Adding photo for SKU: {sku}, file: {photo_file}")
+        photo_rows = add_photo(sheet, curr_row, picture_col, photo_folder, photo_file)
+    else:
+        print(f"No photo found for SKU: {sku}")
+        photo_rows = 0
+    # photo_rows = add_photo(sheet, curr_row, picture_col, photo_folder, file)
 
 
     rows_used = max(len(inventory) + 1, photo_rows)
@@ -94,7 +111,7 @@ print("\n--- Summary ---")
 print(f"Successful: {successful}")
 print(f"No inventory: {no_inventory}")
 print(f"Errors: {errors}")
-print(f"Total products: {len(image_files)}")
+print(f"Total products: {len(product_skus)}")
 
 
 #save excel
