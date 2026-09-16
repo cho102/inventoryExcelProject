@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
+from main import generate_inventory
 
 app = Flask(__name__)
 
@@ -23,6 +24,12 @@ def generate():
 
     print("Product SKUs:")
     print(product_skus)
+
+    #run existing excel generator
+    output_file = generate_inventory(product_skus)
+
+    #give excel file to user
+    return send_file(output_file, as_attachment=True)
 
     return "Product list received!"
 
