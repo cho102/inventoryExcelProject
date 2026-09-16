@@ -17,8 +17,21 @@
 
         </textarea>
         <br><br>
-        <button type="submit">Generate inventory</button>
+        <button type="submit" id="generateButton">Generate inventory</button>
+        <p id="status"></p>
     </form>
+
+    <script>
+        const form = document.querySelector("form");
+        const button = document.getElementById("generateButton");
+        const status = document.getElementById("status");
+
+        form.addEventListener("submit", function() {
+            button.disabled = true;
+            button.textContent = "Generating...";
+            status.textContent = "Please wait while the excel is being generated.";
+        });
+    </script>
 
 </body>
 </html>

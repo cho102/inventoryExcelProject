@@ -16,11 +16,11 @@ def generate():
     product_input = product_input.replace(",", "\n")
 
     #create list of SKUs
-    product_skus = [
+    product_skus = list(dict.fromkeys(
         sku.strip().upper()
         for sku in product_input.splitlines()
         if sku.strip()
-    ]
+    )) 
 
     print("Product SKUs:")
     print(product_skus)
