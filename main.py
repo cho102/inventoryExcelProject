@@ -12,6 +12,8 @@ from excel_formatting import (setup_sheet, add_inventory,
 from photo_processing import add_photo, get_photo_files, get_photo_sku
 from text_processing import get_all_product_skus, find_product_photo
 
+FIXED_ROWS_NO_PHOTOS = 20
+
 #access photos folder
 photo_folder = "photos"
 image_files = get_photo_files(photo_folder)
@@ -96,7 +98,7 @@ for sku in product_skus:
         photo_rows = add_photo(sheet, curr_row, picture_col, photo_folder, photo_file)
     else:
         print(f"No photo found for SKU: {sku}")
-        photo_rows = 0
+        photo_rows = FIXED_ROWS_NO_PHOTOS  # Use a fixed number of rows for products without photos
     # photo_rows = add_photo(sheet, curr_row, picture_col, photo_folder, file)
 
 
