@@ -118,8 +118,9 @@ print(f"Total products: {len(product_skus)}")
 
 #save excel
 date = datetime.now().strftime("%Y%m%d")
+time = datetime.now().strftime("%H%M")
 name = "inStockInventory"
-workbook.save(os.path.join(output_folder, f"{name}_{date}.xlsx"))
+workbook.save(os.path.join(output_folder, f"{name}_{date}{time}.xlsx"))
 browser.close()
 
 #check
