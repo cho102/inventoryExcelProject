@@ -14,6 +14,8 @@ RIGHT = {
       "price_col": 17
       }
 
+NO_PHOTO_ROWS = 15
+
 def setup_sheet(sheet):
 
     # Headers
