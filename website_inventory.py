@@ -1,6 +1,14 @@
 import re
 from playwright.sync_api import sync_playwright
 
+def start_browser():
+    playwright = sync_playwright().start()
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context(storage_state="login_state.json")
+    page = context.new_page()
+    page.goto("http://192.168.1.12/som/query_sm.aspx")
+    return playwright, browser, context, page
+
 def get_inventory(page, sku):
     #Search for SKU
     page.locator("#ContentPlaceHolder1_TextBoxSKU").fill(sku)
