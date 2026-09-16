@@ -64,6 +64,9 @@ def generate_inventory(product_skus):
         #GET COST & INVENTORY
         try:
             cost, inventory = get_inventory(page, sku)
+            print(f"SKU: {sku}")
+            print(f"Cost: {cost}")
+            print(f"Inventory: {inventory}")
             error_message = None
         except Exception as e:
             #Can't find sku
