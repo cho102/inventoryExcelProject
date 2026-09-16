@@ -22,6 +22,9 @@ def generate():
         if sku.strip()
     )) 
 
+    if not product_skus:
+        return "Please enter at least one product number"
+    
     print("Product SKUs:")
     print(product_skus)
 
