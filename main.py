@@ -10,7 +10,7 @@ from excel_formatting import (setup_sheet, add_inventory,
                               update_position, 
                               LEFT, RIGHT)
 from photo_processing import add_photo, get_photo_files, get_photo_sku
-# from text_processing import get_product_sku
+# from text_processing import get_product_skus
 
 #access photos folder
 photo_folder = "photos"
@@ -80,7 +80,6 @@ for file in image_files:
         print(f"No inventory found for {sku}")
         inventory_rows = add_no_inventory(sheet, curr_row, columns, sku)
         no_inventory += 1
-    
     else:
         inventory_rows = add_inventory(sheet, curr_row, columns, sku, cost, inventory)
         successful += 1
@@ -125,6 +124,8 @@ print(f"Successful: {successful}")
 print(f"No inventory: {no_inventory}")
 print(f"Errors: {errors}")
 print(f"Total products: {len(image_files)}")
+
+
 #save excel
 date = datetime.now().strftime("%Y%m%d")
 name = "inStockInventory"

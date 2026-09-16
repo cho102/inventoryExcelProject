@@ -1,4 +1,4 @@
-def get_product_sku(product_list):
+def get_product_skus(product_list):
     skus = []
 
     for name in product_list:
