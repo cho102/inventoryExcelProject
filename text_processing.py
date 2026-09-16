@@ -36,3 +36,20 @@ def read_product_list(file_path):
     with open(file_path, 'r') as f:
         text = f.read()
     return get_product_skus(text)
+
+def get_all_product_skus(product_list, photo_folder):
+    product_skus = []
+
+    #add skus from product list
+    for sku in get_product_skus(product_list):
+        if sku.upper() not in [s.upper() for s in product_skus]:
+            product_skus.append(sku)
+
+
+    #add skus from photo folder
+    photo_files = os.listdir(photo_folder)
+    for photo_file in photo_files:
+        photo_sku = photo_file.split('.')[0]  # Assuming the SKU is the filename without extension
+        if photo_sku.upper() not in [s.upper() for s in product_skus] and photo_sku.split(' ')[0].upper() not in [s.upper() for s in product_skus]:
+            product_skus.append(photo_sku)
+    return product_skus

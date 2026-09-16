@@ -1,12 +1,15 @@
-from text_processing import read_product_list, find_product_photo
+from text_processing import read_product_list, find_product_photo, get_all_product_skus
 
-skus_list = read_product_list("product_list.txt")
+# skus_list = read_product_list("product_list.txt")
 PHOTO_FOLDER = "photos"
+PRODUCT_LIST_FILE = "product_list.txt"
 
-for sku in skus_list:
-    photo = find_product_photo(sku, PHOTO_FOLDER)
-    if photo:
-        print(f"{sku} -> {photo}")
-    else:
-        print(f"{sku} -> No photo found")
-print(skus_list)
+with open(PRODUCT_LIST_FILE, 'r') as f:
+   product_list = f.read()
+
+skus = get_all_product_skus(product_list, PHOTO_FOLDER)
+
+for sku in skus:
+    print(f"SKU: {sku}")
+
+print(f"Total SKUs found: {len(skus)}")
