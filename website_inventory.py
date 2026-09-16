@@ -41,7 +41,7 @@ def get_inventory(page, sku):
     inventory = []
 
     lines = details.strip().splitlines()
-    pattern = rf"{sku}\s+(.*?)\s+\((\d+)\)"
+    pattern = rf"{sku}(?:\s+SET)?\s+(.*?)\s+\((\d+)\)"
         
     for line in lines:
         match = re.search(pattern, line)

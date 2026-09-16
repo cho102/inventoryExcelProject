@@ -1,4 +1,4 @@
-from text_processing import read_product_list, get_product_skus, find_product_photo
+from text_processing import read_product_list, find_product_photo
 
 skus_list = read_product_list("product_list.txt")
 PHOTO_FOLDER = "photos"
