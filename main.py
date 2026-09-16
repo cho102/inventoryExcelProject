@@ -5,8 +5,9 @@ from playwright.sync_api import sync_playwright
 from datetime import datetime
 
 from website_inventory import get_inventory
-from excel_formatting import setup_sheet
-from photo_processing import get_photo_files
+from excel_formatting import (setup_sheet, add_inventory, LEFT, RIGHT)
+from photo_processing import get_photo_files, get_photo_sku
+from text_processing import get_product_sku
 
 #access photos folder
 photo_folder = "photos"
@@ -16,10 +17,6 @@ image_files = get_photo_files(photo_folder)
 #create output_folder
 output_folder = "output"
 os.makedirs(output_folder, exist_ok=True)
-
-#check for images only
-# image_files = sorted([file for file in files 
-#                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))])
 
 #create a new Excel workbook
 workbook = Workbook()
@@ -64,7 +61,7 @@ with sync_playwright() as p:
           qty_col = 16
           price_col = 17
       
-        sku = file.split(".")[0]
+        sku = get_photo_sku(file)
 
         #check for duplicates
         if sku in processed_skus:
