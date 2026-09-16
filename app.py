@@ -17,7 +17,7 @@ def generate():
 
     #create list of SKUs
     product_skus = [
-        sku.strip()
+        sku.strip().upper()
         for sku in product_input.splitlines()
         if sku.strip()
     ]

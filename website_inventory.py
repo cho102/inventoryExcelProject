@@ -13,7 +13,7 @@ def get_inventory(page, sku):
     #Search for SKU
     page.locator("#ContentPlaceHolder1_TextBoxSKU").fill(sku)
     page.locator("#ContentPlaceHolder1_ButtonSubmit").click()
-    page.wait_for_load_state("domcontentloaded")
+    # page.wait_for_load_state("domcontentloaded")
 
     #Find inventory of SKU
     row = page.locator("tr").filter(has_text=sku).first
@@ -42,10 +42,10 @@ def get_inventory(page, sku):
     inventory = []
 
     lines = details.strip().splitlines()
-    pattern = rf"{re.escape(sku)}(?:\s+SET)?\s+(.*?)\s+\((\d+)\)"
+    pattern = rf"^{re.escape(sku)}\s+(?:SET\s+)?(.+?)\s+\((\d+)\)$"
         
     for line in lines:
-        match = re.search(pattern, line)
+        match = re.fullmatch(pattern, line.strip())
 
         if match:
             color = match.group(1).strip()
