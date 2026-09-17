@@ -1,1 +1,5 @@
 login_state.json
+output/
+photos/
+__pycache__/
+*.pyc
