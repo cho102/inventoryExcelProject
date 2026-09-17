@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    Inventory Generator
+    <title>Inventory Generator</title>
 </head>
+    <body>
+        <h1>Inventory Generated Successfully!</h1>
 
+        <p>Total Products: {{ total }}</p>
+        <p>Inventory Found: {{ successful }}</p>
+        <p>No Inventory: {{no_inventory}}</p>
+        <p>Errors: {{ errors }}</p>
+
+        <br>
+
+        <a href="/download/{{filename}}">Download Excel</a>
+
+        <br><br>
+
+        <a href="/">Generate Another Excel</a>
+
+    </body>
 </html>
-<body>
-    <h1>Inventory Generated Successful</h1>
-
-    <p>Total Products: {{ total }}</p>
-    <p>Inventory Found: {{ successful }}</p>
-    <p>No Inventory: {{no_inventory}}</p>
-    <p>Errors: {{ errors }}</p>
-
-    <br>
-
-    <a href="/download/{{filename}}">Download Excel</a>
-
-    <br><br>
-
-    <a href="/">Generate Another Excel</a>
-
-</body>

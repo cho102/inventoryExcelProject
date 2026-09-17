@@ -120,12 +120,14 @@ def generate_inventory(product_skus):
 
 
     #save excel
-    date = datetime.now().strftime("%Y%m%d")
-    time = datetime.now().strftime("%H%M")
+    date = datetime.now().strftime("%Y-%m-%d")
+    time = datetime.now().strftime("%M-%S")
     name = "inStockInventory"
-    filepath = os.path.join(output_folder, f"{name}_{date}{time}.xlsx")
+    filepath = os.path.join(output_folder, f"{name}_{date}_{time}.xlsx")
+
     workbook.save(filepath)
     browser.close()
+    playwright.stop()
 
     #check
     print("Excel file created successfully!")

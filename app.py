@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_from_directory
 from main import generate_inventory
 import os
 
@@ -30,29 +30,27 @@ def generate():
     print(product_skus)
 
     #run existing excel generator
-    output_file, successful, no_inventory, errors = generate_inventory(product_skus)
+    try: 
+        output_file, successful, no_inventory, errors = generate_inventory(product_skus)
 
-    #give excel file to user
-    # return send_file(output_file, as_attachment=True)
-    return render_template(
-        "result.html",
-        total = len(product_skus),
-        successful=successful,
-        no_inventory = no_inventory,
-        errors = errors,
-        filename = os.path.basename(output_file)
-    )
+        #give excel file to user
+        # return send_file(output_file, as_attachment=True)
+        return render_template(
+            "result.html",
+            total = len(product_skus),
+            successful=successful,
+            no_inventory = no_inventory,
+            errors = errors,
+            filename = os.path.basename(output_file)
+        )
+    except Exception as e:
+        print(f"Error generating inventory: {e}")
+        return render_template("error.html", error=str(e)), 500
+
 
 @app.route("/download/<filename>")
 def download(filename):
-    filepath = os.path.join("output", filename)
-
-    if not os.path.isfile(filepath):
-        return "File not found.", 404
-    
-    return send_file(
-        filepath, as_attachment=True
-    )
+    return send_from_directory("output", filename, as_attachment=True)
 
 if __name__ == "__main__":
     app.run(debug=True)
