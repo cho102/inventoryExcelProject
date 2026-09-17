@@ -4,7 +4,7 @@ from playwright.sync_api import sync_playwright
 def start_browser():
     playwright = sync_playwright().start()
     browser = playwright.chromium.launch(headless=False)
-    context = browser.new_context(storage_state="login_state.json")
+    context = browser.new_context()
     page = context.new_page()
     page.goto("http://192.168.1.12/som/query_sm.aspx")
     return playwright, browser, context, page
