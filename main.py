@@ -130,4 +130,4 @@ def generate_inventory(product_skus):
     #check
     print("Excel file created successfully!")
 
-    return filepath
+    return filepath, successful, no_inventory, errors

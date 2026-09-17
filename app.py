@@ -46,6 +46,10 @@ def generate():
 @app.route("/download/<filename>")
 def download(filename):
     filepath = os.path.join("output", filename)
+
+    if not os.path.isfile(filepath):
+        return "File not found.", 404
+    
     return send_file(
         filepath, as_attachment=True
     )
