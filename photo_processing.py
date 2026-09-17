@@ -15,7 +15,10 @@ def get_photo_files(photo_folder):
 
 def get_photo_sku(filename):
     name = filename.upper()
-
+    
+    # Convert underscores back to spaces
+    name = name.replace("_", " ")
+    
     #get everything before .SERIES if it exists
     name = re.split(r"\.SERIES", name, maxsplit = 1)[0]
 
