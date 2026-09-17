@@ -1,4 +1,5 @@
 import os
+import re
 from openpyxl.drawing.image import Image
 
 def get_photo_files(photo_folder):
@@ -13,7 +14,18 @@ def get_photo_files(photo_folder):
 
 
 def get_photo_sku(filename):
-    return filename.split(".")[0]
+    name = filename.upper()
+
+    #get everything before .SERIES if it exists
+    name = re.split(r"\.SERIES", name, maxsplit = 1)[0]
+
+    #remove file extension
+    name = re.sub(r"\.[^.]+$","", name)
+
+    #remove trailing number
+    name = re.sub(r"\s+\d+$","",name)
+
+    return name.strip()
 
 def add_photo(sheet, row, column, photo_folder, filename):
     image_path = os.path.join(photo_folder, filename)

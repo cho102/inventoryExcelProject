@@ -6,10 +6,20 @@ import os
 
 app = Flask(__name__)
 
+ALLOWED_IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif"}
 
 @app.route("/")
 def home():
     return render_template("index.html")
+
+def clear_photo_folder(photo_folder):
+    os.makedirs(photo_folder, exist_ok=True)
+
+    for filename in os.listdir(photo_folder):
+        file_path = os.path.join(photo_folder, filename)
+
+        if os.path.isfile(file_path):
+            os.remove(file_path)
 
 @app.route("/generate", methods=["POST"])
 def generate():
@@ -31,11 +41,24 @@ def generate():
 
     uploaded_images = request.files.getlist("product_images")
 
+    #clear old photos only if new images were uploaded
+    if any(image.filename for image in uploaded_images):
+        clear_photo_folder(photo_folder)
+
     for image in uploaded_images:
         if not image.filename:
             continue
         #clean filename
         filename = secure_filename(image.filename)
+
+        if not filename:
+            continue
+
+        #check file extension
+        extension = os.path.splitext(filename)[1].lower()
+
+        if extension not in ALLOWED_IMAGE_EXTENSIONS:
+            return render_template("error.html", error = f"Unsupported file type: {image.filename}"), 400
 
         #save image to photos folder
         image.save(os.path.join(photo_folder,filename))
@@ -59,7 +82,6 @@ def generate():
     #run existing excel generator
     try: 
         output_file, successful, no_inventory, errors = generate_inventory(product_skus)
-
         #give excel file to user
         # return send_file(output_file, as_attachment=True)
         return render_template(
@@ -73,6 +95,8 @@ def generate():
     except Exception as e:
         print(f"Error generating inventory: {e}")
         return render_template("error.html", error=str(e)), 500
+    finally:
+        clear_photo_folder(photo_folder)
 
 
 @app.route("/download/<filename>")

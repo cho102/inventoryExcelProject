@@ -20,7 +20,7 @@
         <!-- Upload images -->
         <h2>Upload Product Images</h2>
         <input type="file" name="product_images" accept="image/*" multiple>
-
+        <p id="selectedFiles"></p>
         <br><br>
         <!-- generate button -->
         <button type="submit" id="generateButton">Generate inventory</button>
@@ -36,6 +36,22 @@
             button.disabled = true;
             button.textContent = "Generating...";
             status.textContent = "Please wait while the excel is being generated.";
+        });
+
+        // show file names
+        const fileInput = document.querySelector('input[name="product_images"]');
+        const selectedFiles = document.getElementById("selectedFiles");
+
+        fileInput.addEventListener("change", function() {
+            if (fileInput.files.length === 0) {
+                selectedFiles.textContent = "";
+                return;
+            }
+
+            selectedFiles.textContent =
+                Array.from(fileInput.files)
+                    .map(file => file.name)
+                    .join(", ");
         });
     </script>
 
