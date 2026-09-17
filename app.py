@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, send_file
 from main import generate_inventory
+import os
 
 app = Flask(__name__)
 
@@ -29,12 +30,25 @@ def generate():
     print(product_skus)
 
     #run existing excel generator
-    output_file = generate_inventory(product_skus)
+    output_file, successful, no_inventory, errors = generate_inventory(product_skus)
 
     #give excel file to user
-    return send_file(output_file, as_attachment=True)
+    # return send_file(output_file, as_attachment=True)
+    return render_template(
+        "result.html",
+        total = len(product_skus),
+        successful=successful,
+        no_inventory = no_inventory,
+        errors = errors,
+        filename = os.path.basename(output_file)
+    )
 
-    return "Product list received!"
+@app.route("/download/<filename>")
+def download(filename):
+    filepath = os.path.join("output", filename)
+    return send_file(
+        filepath, as_attachment=True
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
