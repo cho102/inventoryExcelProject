@@ -10,13 +10,19 @@
 
     <p>Generate an Excel inventory report.</p>
 
-    <form action="/generate" method = "POST">
-        <label for="product_list">Product numbers:</label>
-        <br>
+    <form action="/generate" method = "POST" enctype="multipart/form-data">
+        #product list
+        <h2>Product numbers:</h2>
         <textarea id="product_list" name="product_list" rows="15" cols="50" placeholder="Enter product numbers separated by comma or returns...">
 
         </textarea>
+        
+        #Upload images
+        <h2>Upload Product Images</h2>
+        <input type="file" name="product_images" accept="image/*" multiple>
+
         <br><br>
+        #generate button
         <button type="submit" id="generateButton">Generate inventory</button>
         <p id="status"></p>
     </form>

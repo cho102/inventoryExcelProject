@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, send_from_directory
 from main import generate_inventory
+from photo_processing import get_photo_sku
+from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
@@ -23,11 +25,36 @@ def generate():
         if sku.strip()
     )) 
 
+    #upload images
+    photo_folder = "photos"
+    os.makedirs(photo_folder, exist_ok=True)
+
+    uploaded_images = request.files.getlist("product_images")
+
+    for image in uploaded_images:
+        if not image.filename:
+            continue
+        #clean filename
+        filename = secure_filename(image.filename)
+
+        #save image to photos folder
+        image.save(os.path.join(photo_folder,filename))
+
+        #get sku from filename
+        sku = get_photo_sku(filename).strip().upper()
+
+        if sku:
+            product_skus.append(sku)
+
+    product_skus = list(dict.fromkeys(product_skus))
+
     if not product_skus:
-        return "Please enter at least one product number"
-    
+        return "Please enter at least one product number or upload an image"
+
     print("Product SKUs:")
     print(product_skus)
+
+
 
     #run existing excel generator
     try: 
