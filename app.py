@@ -3,6 +3,7 @@ from main import generate_inventory
 from photo_processing import get_photo_sku
 from werkzeug.utils import secure_filename
 import os
+import threading
 
 app = Flask(__name__)
 
@@ -97,6 +98,16 @@ def generate():
         return render_template("error.html", error=str(e)), 500
     finally:
         clear_photo_folder(photo_folder)
+
+@app.route("/stop", methods=["POST"])
+def stop():
+    threading.Timer(0.5, os._exit, args=(0,)).start()
+    return """
+    <h1>Inventory Application Stopped</h1>
+    <p>You can close this browser window.</p>
+    """
+
+
 
 
 @app.route("/download/<filename>")
