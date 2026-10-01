@@ -1,5 +1,7 @@
 import os
 import re
+from io import BytesIO 
+from PIL import Image as PILImage
 from openpyxl.drawing.image import Image
 
 def get_photo_files(photo_folder):
@@ -30,9 +32,56 @@ def get_photo_sku(filename):
 
     return name.strip()
 
+def compress_image(image_path): 
+    # Open original image 
+    original = PILImage.open(image_path) 
+    
+    # Convert image to RGB 
+    # This is needed when saving as JPEG. 
+    if original.mode in ("RGBA", "LA", "P"): 
+        background = PILImage.new("RGB", original.size, "white") 
+        
+        if original.mode == "P": 
+            original = original.convert("RGBA") 
+        
+        background.paste( 
+            original, 
+            mask=original.getchannel("A") if original.mode == "RGBA" else None 
+        ) 
+        image = background 
+    else: 
+        image = original.convert("RGB") 
+        
+    # Limit the maximum dimensions. 
+    # This reduces the amount of image data stored in Excel. 
+    max_dimension = 1200 
+
+    if image.width > max_dimension or image.height > max_dimension: 
+        image.thumbnail( 
+            (max_dimension, max_dimension), 
+            PILImage.Resampling.LANCZOS 
+        ) 
+    
+    # Save compressed JPEG into memory 
+    compressed_image = BytesIO() 
+
+    image.save( 
+        compressed_image, 
+        format="JPEG", 
+        quality=75, 
+        optimize=True 
+    ) 
+    compressed_image.seek(0)
+    # Open the compressed image from memory 
+    return PILImage.open(compressed_image)
+
 def add_photo(sheet, row, column, photo_folder, filename):
     image_path = os.path.join(photo_folder, filename)
-    image = Image(image_path)
+    # Compress the image before adding it to Excel
+    compressed_image = compress_image(image_path)
+
+    # Give the compressed image to openpyxl
+    image = Image(compressed_image)
 
     # Resize the image
     new_width = 288
