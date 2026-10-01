@@ -25,6 +25,11 @@ def clear_photo_folder(photo_folder):
 @app.route("/generate", methods=["POST"])
 def generate():
     product_input=request.form["product_list"]
+    
+    file_name = request.form.get("file_name", "").strip()
+
+    for char in '<>:"/\\|?*':
+        file_name = file_name.replace(char, "")
 
     #replace commas with newlines
     product_input = product_input.replace(",", "\n")
@@ -82,7 +87,7 @@ def generate():
 
     #run existing excel generator
     try: 
-        output_file, successful, no_inventory, errors = generate_inventory(product_skus)
+        output_file, successful, no_inventory, errors = generate_inventory(product_skus, file_name)
         #give excel file to user
         # return send_file(output_file, as_attachment=True)
         return render_template(
