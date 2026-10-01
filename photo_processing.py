@@ -72,8 +72,8 @@ def compress_image(image_path):
         optimize=True 
     ) 
     compressed_image.seek(0)
-    # Open the compressed image from memory 
-    return PILImage.open(compressed_image)
+    
+    return compressed_image
 
 def add_photo(sheet, row, column, photo_folder, filename):
     image_path = os.path.join(photo_folder, filename)
