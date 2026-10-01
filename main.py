@@ -11,7 +11,7 @@ from photo_processing import add_photo, get_photo_files, get_photo_sku
 # from text_processing import find_product_photo
 FIXED_ROWS_NO_PHOTOS = 20
 
-def generate_inventory(product_skus):
+def generate_inventory(product_skus, file_name):
 
 
     #access photos folder
@@ -122,7 +122,7 @@ def generate_inventory(product_skus):
     #save excel
     date = datetime.now().strftime("%Y-%m-%d")
     time = datetime.now().strftime("%M-%S")
-    name = "inStockInventory"
+    name = file_name if file_name else "inStockInventory"
     filepath = os.path.join(output_folder, f"{name}_{date}_{time}.xlsx")
 
     workbook.save(filepath)
