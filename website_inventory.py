@@ -35,7 +35,7 @@ def get_inventory(page, sku):
     #get cost column
     cost_text = cells.nth(10).inner_text().strip()
     try:
-        price = float(cost_text)
+        cost = float(cost_text)
     except ValueError:
         raise Exception(f"Invalid cost for SKU {sku}: {cost_text}")
 

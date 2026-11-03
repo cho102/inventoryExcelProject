@@ -95,7 +95,7 @@ def generate_inventory(product_skus, file_name):
                 break
 
         #create image if it exists
-        picture_col = "A" if left else "J"
+        picture_col = "A" if left else "K"
         if photo_file:
             print(f"Adding photo for SKU: {sku}, file: {photo_file}")
             photo_rows = add_photo(sheet, curr_row, picture_col, photo_folder, photo_file)
