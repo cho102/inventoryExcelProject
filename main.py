@@ -63,7 +63,7 @@ def generate_inventory(product_skus, file_name):
 
         #GET COST & INVENTORY
         try:
-            cost, inventory = get_inventory(page, sku)
+            price, cost, inventory = get_inventory(page, sku)
             print(f"SKU: {sku}")
             print(f"Cost: {cost}")
             print(f"Inventory: {inventory}")
@@ -83,7 +83,7 @@ def generate_inventory(product_skus, file_name):
             inventory_rows = add_no_inventory(sheet, curr_row, columns, sku)
             no_inventory += 1
         else:
-            inventory_rows = add_inventory(sheet, curr_row, columns, sku, cost, inventory)
+            inventory_rows = add_inventory(sheet, curr_row, columns, sku, cost, price, inventory)
             successful += 1
 
         # Create the image

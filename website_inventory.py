@@ -25,17 +25,24 @@ def get_inventory(page, sku):
     
     cells = row.locator("td")
     
-    #get cost column
-    cost_text = cells.nth(11).inner_text().strip()
+    #get price column
+    price_text = cells.nth(11).inner_text().strip()
     try:
-        cost = float(cost_text)
+        price = float(price_text)
+    except ValueError:
+        raise Exception(f"Invalid price for SKU {sku}: {price_text}")
+
+    #get cost column
+    cost_text = cells.nth(10).inner_text().strip()
+    try:
+        price = float(cost_text)
     except ValueError:
         raise Exception(f"Invalid cost for SKU {sku}: {cost_text}")
 
     # get the Details column (14th column, index 13)
     details = cells.nth(13).inner_text()
     if not details:
-        return cost, []
+        return price, cost, []
     print("DETAILS:")
     print(details)
     #created list of inventory by color
@@ -52,4 +59,4 @@ def get_inventory(page, sku):
             quantity = int(match.group(2))
             inventory.append((color, quantity))
 
-    return cost, inventory
+    return price, cost, inventory
