@@ -12,7 +12,7 @@ RIGHT = {
       "product_col": 15, 
       "color_col": 16, 
       "qty_col": 17, 
-      "price_col": 18
+      "price_col": 18,
       "cost_col": 19
       }
 
