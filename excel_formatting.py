@@ -3,15 +3,17 @@ LEFT = {
       "product_col": 5, 
       "color_col": 6, 
       "qty_col": 7, 
-      "price_col": 8
+      "price_col": 8,
+      "cost_col": 9
       }
 
 RIGHT = {
-      "picture_col": 10, 
-      "product_col": 14, 
-      "color_col": 15, 
-      "qty_col": 16, 
-      "price_col": 17
+      "picture_col": 11, 
+      "product_col": 15, 
+      "color_col": 16, 
+      "qty_col": 17, 
+      "price_col": 18,
+      "cost_col": 19
       }
 
 NO_PHOTO_ROWS = 15
@@ -25,29 +27,31 @@ def setup_sheet(sheet):
         "F1": "Colors",
         "G1": "Qty",
         "H1": "Price",
+        "I1": "Cost",
 
-        "J1": "Product Picture",
-        "N1": "Product Name",
-        "O1": "Colors",
-        "P1": "Qty",
-        "Q1": "Price",
+        "K1": "Product Picture",
+        "O1": "Product Name",
+        "P1": "Colors",
+        "Q1": "Qty",
+        "R1": "Price",
+        "S1": "Cost"
     }
 
     for cell, value in headers.items():
         sheet[cell] = value
 
     # Picture columns
-    for column in ["A", "B", "C", "D", "J", "K", "L", "M"]:
+    for column in ["A", "B", "C", "D", "N","K", "L", "M"]:
         sheet.column_dimensions[column].width = 12
 
     # Information columns
-    for column in ["E", "N"]:
+    for column in ["E", "O"]:
         sheet.column_dimensions[column].width = 15
 
-    for column in ["F", "G", "H", "O", "P", "Q"]:
+    for column in ["F", "G", "H", "I", "R", "P", "Q", "S"]:
         sheet.column_dimensions[column].width = 10
 
-def add_inventory(sheet, curr_row, columns, sku, cost, inventory):
+def add_inventory(sheet, curr_row, columns, sku, cost, price, inventory):
     if not inventory:  # No inventory found
         sheet.cell(row=curr_row, column=columns["product_col"], value=sku)
         sheet.cell(row=curr_row, column=columns["color_col"], value="No inventory")
@@ -57,7 +61,8 @@ def add_inventory(sheet, curr_row, columns, sku, cost, inventory):
         sheet.cell(row=row, column=columns["product_col"], value=sku)
         sheet.cell(row=row, column=columns["color_col"], value=color)
         sheet.cell(row=row, column=columns["qty_col"], value=quantity)
-        sheet.cell(row=row, column=columns["price_col"], value=cost)
+        sheet.cell(row=row, column=columns["price_col"], value=price)
+        sheet.cell(row=row, column=columns["cost_col"], value=cost)
 
     return len(inventory)
 
